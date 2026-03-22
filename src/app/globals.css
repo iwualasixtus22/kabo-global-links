@@ -60,6 +60,7 @@ h1, h2, h3, h4 {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -67,6 +68,7 @@ h1, h2, h3, h4 {
   transition: all 0.3s;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -83,9 +85,9 @@ h1, h2, h3, h4 {
 
 .card {
   background: var(--white);
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: var(--radius-md);
-  border: 1px solid #e2e8f0;
+  border: 1px solid #f1f5f9;
   transition: all 0.4s;
 }
 
@@ -102,4 +104,44 @@ h1, h2, h3, h4 {
 
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem !important;
+  }
+
+  h2 {
+    font-size: 2rem !important;
+  }
+
+  .navbar .container {
+    flex-wrap: wrap;
+    height: auto !important;
+    padding: 1rem !important;
+    gap: 1rem;
+  }
+
+  .navbar a {
+    font-size: 0.9rem;
+  }
+
+  section {
+    padding: 4rem 0 !important;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }

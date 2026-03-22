@@ -46,7 +46,7 @@ export default async function ServicesPage() {
                       {service.description || "Expertly rendered professional service across our network."}
                     </p>
                     <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#22c55e', marginBottom: '2rem' }}>
-                      From ₦{service.price.toLocaleString()}
+                      {service.price > 0 ? `From ₦${service.price.toLocaleString()}` : "Price Varies"}
                     </div>
                   </div>
                   <Link 

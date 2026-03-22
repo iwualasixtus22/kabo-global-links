@@ -23,7 +23,7 @@ export default async function Home() {
         <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '400px', height: '400px', background: 'rgba(34, 197, 94, 0.05)', borderRadius: '50%', filter: 'blur(80px)' }}></div>
         <div style={{ position: 'absolute', bottom: '-5%', left: '-5%', width: '300px', height: '300px', background: 'rgba(15, 23, 42, 0.03)', borderRadius: '50%', filter: 'blur(60px)' }}></div>
 
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', alignItems: 'center', gap: '5rem', position: 'relative' }}>
+        <div className="container hero-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', alignItems: 'center', gap: '5rem', position: 'relative' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <span style={{ width: '2rem', height: '2px', background: '#22c55e' }}></span>
@@ -31,7 +31,7 @@ export default async function Home() {
                 Nigeria's Elite Service Network
               </span>
             </div>
-            <h1 style={{ fontSize: '4.5rem', lineHeight: 1, color: '#0f172a', marginBottom: '2rem', fontWeight: 900, letterSpacing: '-2px' }}>
+            <h1 style={{ fontSize: 'min(4.5rem, 12vw)', lineHeight: 1, color: '#0f172a', marginBottom: '2rem', fontWeight: 900, letterSpacing: '-2px' }}>
               The Gold Standard in <span style={{ 
                 background: 'linear-gradient(to right, #22c55e, #10b981)', 
                 WebkitBackgroundClip: 'text', 

@@ -7,16 +7,57 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role             Role             @default(USER)
+  serviceRequests  ServiceRequest[] @relation("provider")
+  customerRequests ServiceRequest[] @relation("customer")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  PROVIDER
+}
+
 model ServiceRequest {
-  id          String   @id @default(uuid())
+  id           String        @id @default(uuid())
   customerName String
-  email       String
-  phone       String
-  serviceType String
-  details     String
-  status      RequestStatus @default(PENDING)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  email        String
+  phone        String
+  serviceType  String
+  details      String
+  status       RequestStatus @default(PENDING)
+  providerId   String?
+  provider     User?         @relation("provider", fields: [providerId], references: [id])
+  customerId   String?
+  customer     User?         @relation("customer", fields: [customerId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  icon      String?
+  services  Service[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum RequestStatus {

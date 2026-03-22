@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { submitServiceRequest } from './actions';
 
 export default function RequestPage() {
+  const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -31,7 +33,16 @@ export default function RequestPage() {
           <p style={{ color: '#64748b', marginBottom: '2rem' }}>
             Thank you for choosing Kabo Global Links. Our coordinator will contact you shortly to finalize details.
           </p>
-          <a href="/" className="btn btn-primary">Back to Home</a>
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+            <a href="/" className="btn" style={{ border: '2px solid #22c55e', color: '#22c55e', textDecoration: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem' }}>
+              Back to Home
+            </a>
+            {session && (
+              <a href="/admin" className="btn btn-primary" style={{ textDecoration: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', background: '#22c55e', color: 'white' }}>
+                Go to Dashboard
+              </a>
+            )}
+          </div>
         </div>
       </div>
     );

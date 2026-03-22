@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Connecting individuals, households, and businesses with trusted, verified, and affordable professionals in Nigeria.",
 };
 
+import { Providers } from "@/components/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,11 +23,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <Navbar />
-        <main style={{ paddingTop: '5rem' }}>
-          {children}
-        </main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <main style={{ paddingTop: '5rem' }}>
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

@@ -8,8 +8,8 @@ export default function Footer() {
         </div>
         <div>
           <h4 style={{ marginBottom: '1rem' }}>Contact Info</h4>
-          <p style={{ color: '#94a3b8' }}>Phone: 08143779339</p>
-          <p style={{ color: '#94a3b8' }}>Founder: Ihebom Precious Uzoma</p>
+          <p style={{ color: '#94a3b8' }}>Phone: 08071429870</p>
+          <p style={{ color: '#94a3b8' }}>Founder: Iwuala sixtus chukwuebuka</p>
         </div>
       </div>
       <div className="container" style={{ textAlign: 'center', marginTop: '4rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem', color: '#64748b' }}>

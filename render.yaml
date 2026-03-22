@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: kabo-global-links
+    runtime: node
+    plan: free
+    buildCommand: "npm install && npx prisma migrate deploy && npm run build"
+    startCommand: "npm run start"
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        fromDatabase:
+          name: global_2b1l
+          property: connectionString
+      - key: NEXTAUTH_URL
+        sync: false
+        # replace with your actual Render URL later
+        value: https://kabo-global-links.onrender.com
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: PRISMA_CLIENT_ENGINE_TYPE
+        value: library

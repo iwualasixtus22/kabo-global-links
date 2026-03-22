@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { db } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const categories = await db.category.findMany({
+    include: {
+      services: {
+        take: 3
+      }
+    }
+  });
+
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
@@ -17,7 +26,7 @@ export default function Home() {
               Connecting individuals, households, and businesses with trusted, verified, and affordable professionals.
             </p>
             <div style={{ display: 'flex', gap: '1.5rem' }}>
-              <Link href="/request" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>Get Started</Link>
+              <Link href="/register" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>Get Started</Link>
               <Link href="#services" className="btn" style={{ border: '2px solid #0f172a', color: '#0f172a' }}>Explore Services</Link>
             </div>
           </div>
@@ -50,19 +59,14 @@ export default function Home() {
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
-            {[
-              { title: "Construction & Building", icon: "🏗", items: ["Electrical & Plumbing", "Painting & Roofing", "Borehole & Fabrication"] },
-              { title: "Home Services", icon: "🏠", items: ["Deep Cleaning", "AC & Generator Repair", "CCTV & Pest Control"] },
-              { title: "Office & Business", icon: "💼", items: ["Branding & IT Services", "Website Design", "Business Registration"] },
-              { title: "Logistics", icon: "🚚", items: ["Fast Delivery", "Truck Hire", "Relocation Services"] }
-            ].map((service, i) => (
-              <div key={i} className="card">
-                <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>{service.icon}</div>
-                <h3 style={{ marginBottom: '1.5rem' }}>{service.title}</h3>
+            {categories.map((category) => (
+              <div key={category.id} className="card">
+                <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>{category.icon || '🛠️'}</div>
+                <h3 style={{ marginBottom: '1.5rem' }}>{category.name}</h3>
                 <ul style={{ listStyle: 'none' }}>
-                  {service.items.map((item, j) => (
-                    <li key={j} style={{ color: '#64748b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ color: '#22c55e' }}>•</span> {item}
+                  {category.services.map((service) => (
+                    <li key={service.id} style={{ color: '#64748b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ color: '#22c55e' }}>•</span> {service.name}
                     </li>
                   ))}
                 </ul>
@@ -78,7 +82,7 @@ export default function Home() {
           <div style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', padding: '4rem', borderRadius: '1.5rem', textAlign: 'center', color: 'white' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Ready to Experience Quality Service?</h2>
             <p style={{ fontSize: '1.25rem', marginBottom: '2.5rem', opacity: 0.9 }}>Tell us what you need and we'll connect you with the right professional.</p>
-            <Link href="/request" className="btn" style={{ background: 'white', color: '#22c55e', padding: '1rem 3rem', fontSize: '1.1rem' }}>
+            <Link href="/register" className="btn" style={{ background: 'white', color: '#22c55e', padding: '1rem 3rem', fontSize: '1.1rem' }}>
               Book a Service Now
             </Link>
           </div>

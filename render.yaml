@@ -13,7 +13,6 @@ services:
           name: global_2b1l
           property: connectionString
       - key: NEXTAUTH_URL
-        sync: false
         # replace with your actual Render URL later
         value: https://kabo-global-links.onrender.com
       - key: NEXTAUTH_SECRET

@@ -31,11 +31,12 @@ export default async function Home() {
             </div>
           </div>
           <div style={{ position: 'relative' }}>
-            <div style={{ width: '100%', height: '400px', background: '#e2e8f0', borderRadius: '1.5rem', overflow: 'hidden' }}>
-              {/* Image would go here */}
-              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-                [Service Integration Image]
-              </div>
+            <div style={{ width: '100%', minHeight: '400px', background: '#e2e8f0', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+              <img 
+                src="/partnership.png" 
+                alt="Kabo Global Links Premium Partnership" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
+              />
             </div>
             <div className="card" style={{ position: 'absolute', bottom: '-2rem', left: '-2rem', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', minWidth: '200px' }}>
               <div style={{ width: '3rem', height: '3rem', background: '#22c55e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>

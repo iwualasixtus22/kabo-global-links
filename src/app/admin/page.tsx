@@ -19,13 +19,11 @@ export default async function AdminPage() {
   if (userRole === 'USER') {
     where.customerId = (session.user as any).id;
   } else if (userRole === 'PROVIDER') {
-    // Providers should see PENDING requests OR requests assigned to them
     where.OR = [
       { status: 'PENDING' },
       { providerId: (session.user as any).id }
     ];
   }
-  // ADMIN role has no where clause (sees all)
 
   const requests = await db.serviceRequest.findMany({
     where,
@@ -41,16 +39,15 @@ export default async function AdminPage() {
   });
 
   return (
-    <div className="container" style={{ padding: '4rem 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ margin: 0 }}>Service <span style={{ color: '#22c55e' }}>Requests</span> Dashboard</h1>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontWeight: 700 }}>{session.user?.name}</div>
-          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{(session.user as any).role}</div>
-        </div>
-      </div>
-      
-      <AdminDashboardClient initialRequests={requests as any} user={session.user as any} />
+    <div className="bg-light" style={{ minHeight: '100vh', paddingTop: '2rem' }}>
+       <AdminDashboardClient 
+         initialRequests={requests as any} 
+         user={{ 
+           id: (session.user as any).id, 
+           name: session.user?.name, 
+           role: userRole 
+         }} 
+       />
     </div>
   );
 }

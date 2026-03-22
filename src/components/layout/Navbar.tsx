@@ -13,25 +13,24 @@ export default function Navbar() {
           <span style={{ color: '#22c55e' }}>KABO</span> GLOBAL LINKS
         </Link>
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <Link href="/#services" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 500 }}>Services</Link>
-          
           {session ? (
             <>
+              <Link href="/services" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 500 }}>Services</Link>
               <Link href="/admin" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 500 }}>Dashboard</Link>
+              <Link href="/request" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem' }}>Book Now</Link>
               <button 
                 onClick={() => signOut()} 
-                style={{ background: 'none', border: 'none', color: '#1e293b', fontWeight: 500, cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 600, cursor: 'pointer', padding: 0 }}
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 500 }}>Login</Link>
+              <Link href="/login" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 600 }}>Login</Link>
+              <Link href="/register" className="btn btn-primary">Join Now</Link>
             </>
           )}
-
-          <Link href="/request" className="btn btn-primary">Book Now</Link>
         </div>
       </div>
     </nav>

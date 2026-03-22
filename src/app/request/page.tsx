@@ -1,11 +1,14 @@
-import { Metadata } from "next";
-import RequestPage from "./RequestPage"; // Renaming the client component file for clarity
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import RequestPage from "./RequestPage";
 
-export const metadata: Metadata = {
-  title: "Book a Service | Kabo Global Links",
-  description: "Request professional services in construction, cleaning, IT, and more.",
-};
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect('/login?callbackUrl=/request');
+  }
 
-export default function Page() {
   return <RequestPage />;
 }

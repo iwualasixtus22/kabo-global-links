@@ -2,10 +2,15 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { submitServiceRequest } from './actions';
+import { Suspense } from 'react';
 
-export default function RequestPage() {
+function RequestForm() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const preselectedService = searchParams.get('service') || '';
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -53,36 +58,54 @@ export default function RequestPage() {
       <div style={{ maxWidth: '700px', margin: '0 auto' }}>
         <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', textAlign: 'center' }}>Book a <span style={{ color: '#22c55e' }}>Service</span></h1>
         <p style={{ color: '#64748b', textAlign: 'center', marginBottom: '3rem' }}>
-          Provide your details and the service you require. We'll handle the rest.
+          {preselectedService ? `You've selected ${preselectedService}. Please provide your details to finalize.` : "Provide your details and the service you require. We'll handle the rest."}
         </p>
 
         <form onSubmit={handleSubmit} className="card" style={{ display: 'grid', gap: '1.5rem' }}>
           <div style={{ display: 'grid', gap: '0.5rem' }}>
             <label style={{ fontWeight: 600 }}>Full Name</label>
-            <input name="customerName" required style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} placeholder="John Doe" />
+            <input 
+              name="customerName" 
+              required 
+              defaultValue={session?.user?.name || ''}
+              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} 
+              placeholder="John Doe" 
+            />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             <div style={{ display: 'grid', gap: '0.5rem' }}>
               <label style={{ fontWeight: 600 }}>Email Address</label>
-              <input type="email" name="email" required style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} placeholder="john@example.com" />
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                defaultValue={session?.user?.email || ''}
+                style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} 
+                placeholder="john@example.com" 
+              />
             </div>
             <div style={{ display: 'grid', gap: '0.5rem' }}>
               <label style={{ fontWeight: 600 }}>Phone Number</label>
-              <input name="phone" required style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} placeholder="08123456789" />
+              <input 
+                name="phone" 
+                required 
+                style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }} 
+                placeholder="08123456789" 
+              />
             </div>
           </div>
 
           <div style={{ display: 'grid', gap: '0.5rem' }}>
             <label style={{ fontWeight: 600 }}>Service Type</label>
-            <select name="serviceType" required style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }}>
-              <option value="">Select a service</option>
-              <option value="Construction">Construction & Building</option>
-              <option value="Home Services">Home Services</option>
-              <option value="Office & Business">Office & Business Support</option>
-              <option value="Logistics">Logistics & Transportation</option>
-              <option value="Staffing">Skilled Staffing</option>
-            </select>
+            <input 
+              name="serviceType" 
+              required 
+              readOnly={!!preselectedService}
+              defaultValue={preselectedService}
+              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', background: preselectedService ? '#f8fafc' : 'white' }} 
+              placeholder="e.g. Electrical Repair"
+            />
           </div>
 
           <div style={{ display: 'grid', gap: '0.5rem' }}>
@@ -91,10 +114,18 @@ export default function RequestPage() {
           </div>
 
           <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ padding: '1rem', width: '100%', fontSize: '1.1rem' }}>
-            {isSubmitting ? 'Submitting...' : 'Submit Request'}
+            {isSubmitting ? 'Submitting...' : 'Confirm & Book Now'}
           </button>
         </form>
       </div>
     </div>
+  );
+}
+
+export default function RequestPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RequestForm />
+    </Suspense>
   );
 }

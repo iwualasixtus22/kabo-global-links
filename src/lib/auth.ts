@@ -1,11 +1,11 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "./prisma";
+import prisma from "./prisma";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
-  // adapter: PrismaAdapter(db as any),
+  // adapter: PrismaAdapter(prisma as any),
   session: {
     strategy: "jwt",
   },
@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           console.log('AUTH DEBUG: Attempting login for:', credentials.email.toLowerCase());
-          const user = await db.user.findUnique({
+          const user = await prisma.user.findUnique({
             where: {
               email: credentials.email.toLowerCase(),
             },

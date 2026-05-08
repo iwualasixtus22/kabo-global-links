@@ -1,10 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -12,17 +12,11 @@ model User {
   email     String   @unique
   password  String
   name      String?
-  role             Role             @default(USER)
+  role             String           @default("USER")
   serviceRequests  ServiceRequest[] @relation("provider")
   customerRequests ServiceRequest[] @relation("customer")
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
-  PROVIDER
 }
 
 model ServiceRequest {
@@ -32,7 +26,7 @@ model ServiceRequest {
   phone        String
   serviceType  String
   details      String
-  status       RequestStatus @default(PENDING)
+  status       String @default("PENDING")
   providerId   String?
   provider     User?         @relation("provider", fields: [providerId], references: [id])
   customerId   String?
@@ -59,11 +53,4 @@ model Service {
   category    Category  @relation(fields: [categoryId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-}
-
-enum RequestStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
 }

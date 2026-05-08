@@ -27,19 +27,39 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
   }, [router]);
 
   async function handleAccept(requestId: string) {
+    console.log('ACCEPT BUTTON CLICKED for ID:', requestId);
+    if (requestId.startsWith('fallback-')) {
+      alert('This is a DEMO request. To test database actions, please create a REAL request from the home page.');
+      return;
+    }
     if (isUpdating) return;
     setIsUpdating(true);
-    const result = await updateRequestStatus(requestId, 'IN_PROGRESS', user.id);
-    if (!result.success) alert(result.error);
-    setIsUpdating(false);
+    try {
+      const result = await updateRequestStatus(requestId, 'IN_PROGRESS', user.id);
+      if (!result.success) alert(result.error);
+    } catch (err) {
+      console.error('Accept job failed:', err);
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   async function handleComplete(requestId: string) {
+    console.log('FINALIZE BUTTON CLICKED for ID:', requestId);
+    if (requestId.startsWith('fallback-')) {
+      alert('This is a DEMO request. To test database actions, please create a REAL request from the home page.');
+      return;
+    }
     if (isUpdating) return;
     setIsUpdating(true);
-    const result = await updateRequestStatus(requestId, 'COMPLETED');
-    if (!result.success) alert(result.error);
-    setIsUpdating(false);
+    try {
+      const result = await updateRequestStatus(requestId, 'COMPLETED');
+      if (!result.success) alert(result.error);
+    } catch (err) {
+      console.error('Finalize job failed:', err);
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   const getStatusStyle = (status: string) => {
@@ -58,27 +78,27 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
              <span style={{ fontSize: '1.5rem' }}>👋</span>
-             <h1 style={{ fontSize: '2.5rem', fontWeight: 800 }}>Welcome Back, {user.name}</h1>
+             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ffffff' }}>Welcome Back, {user.name}</h1>
           </div>
-          <p style={{ color: '#64748b' }}>
-            Account Role: <span style={{ color: '#22c55e', fontWeight: 700 }}>{user.role}</span> • You are managing Nigeria's elite service network.
+          <p style={{ color: '#94a3b8' }}>
+            Account Role: <span style={{ color: '#06b6d4', fontWeight: 700 }}>{user.role}</span> • You are managing Nigeria's elite service network.
           </p>
         </div>
         
         <div style={{ display: 'flex', gap: '1.5rem' }}>
-          <StatCard label="Total" value={total} color="#0f172a" />
-          <StatCard label="Pending" value={pending} color="#f59e0b" />
-          <StatCard label="Active" value={inProgress} color="#22c55e" />
-          <StatCard label="Done" value={completed} color="#64748b" />
+          <StatCard label="Total" value={total} color="#ffffff" />
+          <StatCard label="Pending" value={pending} color="#fcd34d" />
+          <StatCard label="Active" value={inProgress} color="#34d399" />
+          <StatCard label="Done" value={completed} color="#94a3b8" />
         </div>
       </div>
 
       {/* Main Table Content */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+      <div className="glass-card" style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+              <tr style={{ background: 'rgba(255, 255, 255, 0.05)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <th style={thStyle}>Date</th>
                 <th style={thStyle}>Customer</th>
                 <th style={thStyle}>Service Requested</th>
@@ -102,16 +122,16 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
                     <tr key={req.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
                       <td style={tdStyle}>{new Date(req.createdAt).toLocaleDateString()}</td>
                       <td style={tdStyle}>
-                        <div style={{ fontWeight: 700, color: '#0f172a' }}>{req.customerName}</div>
+                        <div style={{ fontWeight: 700, color: '#ffffff' }}>{req.customerName}</div>
                       </td>
                       <td style={tdStyle}>
-                        <span style={{ background: '#f1f5f9', padding: '0.4rem 0.8rem', borderRadius: '0.4rem', fontSize: '0.85rem', fontWeight: 600 }}>
+                        <span style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#f8fafc', padding: '0.4rem 0.8rem', borderRadius: '0.4rem', fontSize: '0.85rem', fontWeight: 600 }}>
                           {req.serviceType}
                         </span>
                       </td>
                       <td style={tdStyle}>
-                        <div style={{ fontSize: '0.85rem', color: '#475569' }}>{req.email}</div>
-                        <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{req.phone}</div>
+                        <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>{req.email}</div>
+                        <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{req.phone}</div>
                       </td>
                       <td style={tdStyle}>
                         <span style={{ 
@@ -127,12 +147,14 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
                         </span>
                       </td>
                       <td style={tdStyle}>
-                        {req.provider ? (
+                        {req.id.startsWith('fallback-') ? (
+                          <span style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '0.85rem' }}>System Generated</span>
+                        ) : req.provider ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <div style={{ width: '2rem', height: '2rem', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>👤</div>
+                             <div style={{ width: '2rem', height: '2rem', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>👤</div>
                             <div>
-                               <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{req.provider.name}</div>
-                               <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Active Specialist</div>
+                               <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>{req.provider.name}</div>
+                               <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Active Specialist</div>
                             </div>
                           </div>
                         ) : (
@@ -156,7 +178,7 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
                               onClick={() => handleComplete(req.id)}
                               disabled={isUpdating}
                               className="btn" 
-                              style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '0.5rem', background: '#0f172a', color: 'white', border: 'none' }}
+                              style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '0.5rem', background: '#ffffff', color: '#0f172a', border: 'none', fontWeight: 600 }}
                             >
                               Finalize
                             </button>
@@ -177,8 +199,8 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
 
 function StatCard({ label, value, color }: { label: string, value: number, color: string }) {
   return (
-    <div className="card" style={{ padding: '1.5rem 2rem', border: '1px solid #f1f5f9', boxShadow: 'none', background: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#64748b', marginBottom: '0.25rem', letterSpacing: '1px' }}>{label}</div>
+    <div className="glass-card" style={{ padding: '1.5rem 2rem', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#94a3b8', marginBottom: '0.25rem', letterSpacing: '1px' }}>{label}</div>
       <div style={{ fontSize: '1.75rem', fontWeight: 900, color: color }}>{value}</div>
     </div>
   );
@@ -188,7 +210,7 @@ const thStyle: React.CSSProperties = {
   padding: '1.25rem',
   fontSize: '0.85rem',
   fontWeight: 700,
-  color: '#475569',
+  color: '#94a3b8',
   textTransform: 'uppercase',
   letterSpacing: '1px'
 };
@@ -196,6 +218,6 @@ const thStyle: React.CSSProperties = {
 const tdStyle: React.CSSProperties = {
   padding: '1.25rem',
   fontSize: '0.95rem',
-  color: '#475569',
+  color: '#cbd5e1',
   verticalAlign: 'middle'
 };

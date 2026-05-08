@@ -1,21 +1,29 @@
 import Link from "next/link";
 import { db } from "@/lib/prisma";
+import { FALLBACK_CATEGORIES } from "@/lib/fallbackData";
 
 export default async function Home() {
-  const categories = await db.category.findMany({
-    include: {
-      services: {
-        take: 3
+  let categories = [];
+  try {
+    categories = await db.category.findMany({
+      include: {
+        services: {
+          take: 3
+        }
       }
-    }
-  });
+    });
+    if (categories.length === 0) categories = FALLBACK_CATEGORIES;
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    categories = FALLBACK_CATEGORIES;
+  }
 
   return (
     <div className="animate-fade-in">
       {/* Premium Hero Section */}
       <section style={{ 
         padding: '8rem 0', 
-        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        background: 'transparent',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -31,37 +39,37 @@ export default async function Home() {
                 Nigeria's Elite Service Network
               </span>
             </div>
-            <h1 style={{ fontSize: 'min(4.5rem, 12vw)', lineHeight: 1, color: '#0f172a', marginBottom: '2rem', fontWeight: 900, letterSpacing: '-2px' }}>
+            <h1 style={{ fontSize: 'min(4.5rem, 12vw)', lineHeight: 1, color: '#f8fafc', marginBottom: '2rem', fontWeight: 900, letterSpacing: '-2px' }}>
               The Gold Standard in <span style={{ 
-                background: 'linear-gradient(to right, #22c55e, #10b981)', 
+                background: 'linear-gradient(to right, #06b6d4, #22c55e)', 
                 WebkitBackgroundClip: 'text', 
                 WebkitTextFillColor: 'transparent' 
               }}>Service Coordination.</span>
             </h1>
-            <p style={{ fontSize: '1.4rem', color: '#64748b', marginBottom: '3rem', maxWidth: '600px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '1.4rem', color: '#cbd5e1', marginBottom: '3rem', maxWidth: '600px', lineHeight: 1.5 }}>
               Connecting high-net-worth individuals, premium households, and vision-driven businesses with the most verified professionals in Nigeria.
             </p>
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
               <Link href="/services" className="btn btn-primary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(34, 197, 94, 0.3)' }}>
                 View Elite Services
               </Link>
-              <Link href="/register" className="btn" style={{ background: 'white', color: '#0f172a', padding: '1.25rem 2.5rem', fontSize: '1.2rem', borderRadius: '1rem', border: '1px solid #e2e8f0' }}>
+              <Link href="/register" className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: '#f8fafc', padding: '1.25rem 2.5rem', fontSize: '1.2rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
                 Join the Network
               </Link>
             </div>
             
             <div style={{ marginTop: '4rem', display: 'flex', gap: '3rem', borderTop: '1px solid #e2e8f0', paddingTop: '2.5rem' }}>
               <div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0f172a' }}>1,200+</div>
-                <div style={{ fontSize: '0.9rem', color: '#64748b' }}>Verified Experts</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#06b6d4' }}>1,200+</div>
+                <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Verified Experts</div>
               </div>
               <div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0f172a' }}>15k+</div>
-                <div style={{ fontSize: '0.9rem', color: '#64748b' }}>Successful Links</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#06b6d4' }}>15k+</div>
+                <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Successful Links</div>
               </div>
               <div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0f172a' }}>24/7</div>
-                <div style={{ fontSize: '0.9rem', color: '#64748b' }}>VIP Coordination</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#06b6d4' }}>24/7</div>
+                <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>VIP Coordination</div>
               </div>
             </div>
           </div>
@@ -119,11 +127,11 @@ export default async function Home() {
       </section>
 
       {/* Modern Services Teaser */}
-      <section style={{ padding: '10rem 0', background: 'white' }}>
+      <section style={{ padding: '10rem 0', background: 'transparent' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
-            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>Explore Our <span style={{ color: '#22c55e' }}>Premium Categories</span></h2>
-            <p style={{ color: '#64748b', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>Curated services designed for precision, speed, and absolute quality.</p>
+            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800, color: '#f8fafc' }}>Explore Our <span style={{ color: '#06b6d4' }}>Premium Categories</span></h2>
+            <p style={{ color: '#94a3b8', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>Curated services designed for precision, speed, and absolute quality.</p>
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
@@ -131,7 +139,7 @@ export default async function Home() {
               <Link 
                 href="/services" 
                 key={category.id} 
-                className="card" 
+                className="card glass-card" 
                 style={{ 
                   textDecoration: 'none', 
                   color: 'inherit',
@@ -139,29 +147,29 @@ export default async function Home() {
                   flexDirection: 'column', 
                   alignItems: 'center', 
                   textAlign: 'center',
-                  background: 'linear-gradient(to bottom, #ffffff, #f8fafc)',
-                  border: '1px solid #f1f5f9'
+                  background: 'rgba(15, 23, 42, 0.4)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
                 <div style={{ 
                   fontSize: '3.5rem', 
                   width: '6rem', 
                   height: '6rem', 
-                  background: 'white', 
+                  background: 'rgba(255, 255, 255, 0.05)', 
                   borderRadius: '2rem', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center', 
                   marginBottom: '2rem',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)'
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}>
                   {category.icon || '🛠️'}
                 </div>
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{category.name}</h3>
-                <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#f8fafc' }}>{category.name}</h3>
+                <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
                   Top-tier {category.name.toLowerCase()} solutions for discerning clients.
                 </p>
-                <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '0.9rem' }}>Learn More →</span>
+                <span style={{ color: '#06b6d4', fontWeight: 700, fontSize: '0.9rem' }}>Learn More →</span>
               </Link>
             ))}
           </div>
@@ -172,14 +180,16 @@ export default async function Home() {
       <section style={{ padding: '0 0 10rem' }}>
         <div className="container">
           <div style={{ 
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', 
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)', 
+            backdropFilter: 'blur(10px)',
             padding: '6rem 4rem', 
             borderRadius: '3rem', 
             textAlign: 'center', 
             color: 'white',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 30px 60px -15px rgba(15, 23, 42, 0.4)'
+            boxShadow: '0 30px 60px -15px rgba(15, 23, 42, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
             <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '300px', height: '300px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '50%', filter: 'blur(50px)' }}></div>
             <h2 style={{ fontSize: '3.5rem', marginBottom: '2rem', fontWeight: 800, letterSpacing: '-1px' }}>Ready to Experience Excellence?</h2>

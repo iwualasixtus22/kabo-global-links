@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { FALLBACK_CATEGORIES } from "@/lib/fallbackData";
 
 export default async function ServicesPage() {
   const session = await getServerSession(authOptions);
@@ -10,11 +11,18 @@ export default async function ServicesPage() {
     redirect('/login?callbackUrl=/services');
   }
 
-  const categories = await db.category.findMany({
-    include: {
-      services: true
-    }
-  });
+  let categories = [];
+  try {
+    categories = await db.category.findMany({
+      include: {
+        services: true
+      }
+    });
+    if (categories.length === 0) categories = FALLBACK_CATEGORIES;
+  } catch (error) {
+    console.error("Database connection failed in Services:", error);
+    categories = FALLBACK_CATEGORIES;
+  }
 
   return (
     <div className="container" style={{ padding: '4rem 0' }}>
@@ -43,7 +51,7 @@ export default async function ServicesPage() {
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: '1.4rem', marginBottom: '0.75rem', color: '#0f172a' }}>{service.name}</h3>
                     <p style={{ color: '#64748b', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                      {service.description || "Expertly rendered professional service across our network."}
+                      {(service as any).description || "Expertly rendered professional service across our network."}
                     </p>
                     <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#22c55e', marginBottom: '2rem' }}>
                       {service.price > 0 ? `From ₦${service.price.toLocaleString()}` : "Price Varies"}

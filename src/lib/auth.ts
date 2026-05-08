@@ -24,31 +24,52 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await db.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
+        try {
+          console.log('AUTH DEBUG: Attempting login for:', credentials.email.toLowerCase());
+          const user = await db.user.findUnique({
+            where: {
+              email: credentials.email.toLowerCase(),
+            },
+          });
 
-        if (!user || !user.password) {
-          return null;
+          if (!user) {
+            console.log('AUTH DEBUG: User not found');
+            throw new Error('No account found with this email');
+          }
+
+          if (!user.password) {
+            console.log('AUTH DEBUG: User has no password set');
+            throw new Error('Account exists but no password is set');
+          }
+
+          const isPasswordCorrect = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (!isPasswordCorrect) {
+            console.log('AUTH DEBUG: Password mismatch');
+            throw new Error('Incorrect password');
+          }
+
+          console.log('AUTH DEBUG: Login successful for:', user.email);
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        } catch (error: any) {
+          console.error('AUTH DEBUG: CRITICAL LOGIN ERROR:', error);
+          // If it's one of our custom errors, re-throw it
+          if (error.message === 'No account found with this email' || 
+              error.message === 'Incorrect password' ||
+              error.message === 'Account exists but no password is set') {
+            throw error;
+          }
+          // Otherwise, it's a DB error
+          throw new Error('Database connection error: ' + (error.message || 'Unknown error'));
         }
-
-        const isPasswordCorrect = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordCorrect) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       },
     }),
   ],

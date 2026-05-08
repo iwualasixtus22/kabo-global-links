@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AdminDashboardClient from "./AdminDashboardClient";
+import { FALLBACK_REQUESTS } from "@/lib/fallbackData";
 
 export const dynamic = 'force-dynamic';
 
@@ -25,18 +26,25 @@ export default async function AdminPage() {
     ];
   }
 
-  const requests = await db.serviceRequest.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-    include: {
-      provider: {
-        select: {
-          name: true,
-          email: true,
+  let requests = [];
+  try {
+    requests = await db.serviceRequest.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        provider: {
+          select: {
+            name: true,
+            email: true,
+          }
         }
       }
-    }
-  });
+    });
+    if (requests.length === 0) requests = FALLBACK_REQUESTS;
+  } catch (error) {
+    console.error("Database connection failed in Admin:", error);
+    requests = FALLBACK_REQUESTS;
+  }
 
   return (
     <div className="bg-light" style={{ minHeight: '100vh', paddingTop: '2rem' }}>

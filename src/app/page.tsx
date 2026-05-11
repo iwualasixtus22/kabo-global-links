@@ -192,7 +192,7 @@ export default async function Home() {
             border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
             <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '300px', height: '300px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '50%', filter: 'blur(50px)' }}></div>
-            <h2 style={{ fontSize: '3.5rem', marginBottom: '2rem', fontWeight: 800, letterSpacing: '-1px' }}>Ready to Experience Excellence?</h2>
+            <h2 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '2rem', fontWeight: 800, letterSpacing: '-1px' }}>Ready to Experience Excellence?</h2>
             <p style={{ fontSize: '1.4rem', marginBottom: '4rem', opacity: 0.8, maxWidth: '700px', margin: '0 auto 4rem' }}>
               Connect with Nigeria's best hands today. Our coordination team is standing by to ensure your project is a masterpiece.
             </p>

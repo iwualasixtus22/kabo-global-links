@@ -74,18 +74,18 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
   return (
     <div className="container" style={{ padding: '3rem 0 6rem' }}>
       {/* Header & Stats Section */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '2rem' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3rem', flexWrap: 'wrap', gap: '2rem', flexDirection: 'column' }}>
+        <div style={{ width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
              <span style={{ fontSize: '1.5rem' }}>👋</span>
-             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ffffff' }}>Welcome Back, {user.name}</h1>
+             <h1 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', fontWeight: 800, color: '#ffffff', wordBreak: 'break-word' }}>Welcome Back, {user.name}</h1>
           </div>
           <p style={{ color: '#94a3b8' }}>
             Account Role: <span style={{ color: '#06b6d4', fontWeight: 700 }}>{user.role}</span> • You are managing Nigeria's elite service network.
           </p>
         </div>
         
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', width: '100%' }}>
           <StatCard label="Total" value={total} color="#ffffff" />
           <StatCard label="Pending" value={pending} color="#fcd34d" />
           <StatCard label="Active" value={inProgress} color="#34d399" />
@@ -199,9 +199,9 @@ export default function AdminDashboardClient({ initialRequests, user }: { initia
 
 function StatCard({ label, value, color }: { label: string, value: number, color: string }) {
   return (
-    <div className="glass-card" style={{ padding: '1.5rem 2rem', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#94a3b8', marginBottom: '0.25rem', letterSpacing: '1px' }}>{label}</div>
-      <div style={{ fontSize: '1.75rem', fontWeight: 900, color: color }}>{value}</div>
+    <div className="glass-card" style={{ flex: '1 1 min(120px, 100%)', padding: '1rem', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#94a3b8', marginBottom: '0.25rem', letterSpacing: '1px' }}>{label}</div>
+      <div style={{ fontSize: '1.5rem', fontWeight: 900, color: color }}>{value}</div>
     </div>
   );
 }

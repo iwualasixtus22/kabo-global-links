@@ -11,8 +11,9 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+    error: "/login", // Redirect back to login on error instead of generic error page
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-dev-only',
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -26,6 +27,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
+          console.log('AUTH DEBUG: Checking database connection...');
+          // Test connection
+          await db.$queryRaw`SELECT 1`;
+          
           console.log('AUTH DEBUG: Attempting login for:', credentials.email.toLowerCase());
           const user = await db.user.findUnique({
             where: {
@@ -34,7 +39,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            console.log('AUTH DEBUG: User not found');
+            console.log('AUTH DEBUG: User not found in database');
             throw new Error('No account found with this email');
           }
 
@@ -61,15 +66,20 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
           };
         } catch (error: any) {
-          console.error('AUTH DEBUG: CRITICAL LOGIN ERROR:', error);
-          // If it's one of our custom errors, re-throw it
-          if (error.message === 'No account found with this email' || 
-              error.message === 'Incorrect password' ||
-              error.message === 'Account exists but no password is set') {
+          console.error('AUTH DEBUG: CRITICAL LOGIN ERROR:', error.message);
+          
+          // Re-throw known errors
+          const knownErrors = ['No account found with this email', 'Incorrect password', 'Account exists but no password is set'];
+          if (knownErrors.includes(error.message)) {
             throw error;
           }
-          // Otherwise, it's a DB error
-          throw new Error('Database connection error: ' + (error.message || 'Unknown error'));
+          
+          // If it's a Prisma error, give more context
+          if (error.code) {
+            throw new Error(`Database Error (${error.code}): Please check your Vercel DATABASE_URL`);
+          }
+
+          throw new Error('Authentication Service Unavailable: ' + (error.message || 'Unknown error'));
         }
       },
     }),
@@ -77,7 +87,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.role = (user as any).role || 'USER';
         token.id = user.id;
       }
       return token;
